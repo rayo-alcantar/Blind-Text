@@ -1,0 +1,7 @@
+[updater]
+LatestVersion=0.1
+[motd]
+Latest=1
+mode=text
+text1=Bienvenido
+text2=bienvenido

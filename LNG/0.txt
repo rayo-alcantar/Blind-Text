@@ -1,0 +1,34 @@
+[language info]
+Name=
+code=
+version=
+author=
+Copyright=
+[strings]
+Loading...=
+Extracting sounds...=
+error=
+Damn thief, stop stealing the sounds!=
+Checking version...=
+pending update=
+there is a pending update. Do you want to install it right now?=
+ press enter to continue, space to repeat information.=
+You have the version=
+and is available the"=
+Update available!=
+Downloading message of the day...=
+Please wait.=
+Open the menu or explore the following options:=
+Open menu=
+E&xit=
+Exit=
+Help=
+&User manual=
+Changes=
+Errors and suggestions=
+Visit website=
+About...=
+The file cannot be found.=
+Opening...=
+An error occurred when reading the file.=
+Close=
