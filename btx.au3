@@ -46,9 +46,11 @@ $idioma = iniRead ("config\config.st", "General settings", "language", "")
 #include <include\reader.au3>
 #include <include\sapi.au3>
 #include "include\share.au3"
+#include "include\sintesizer.au3"
 #include "include\translator.au3"
 #include "updater.au3"
-;#include <WindowsConstants.au3>
+#include <WindowsConstants.au3>
+#include "include\zip.au3"
 Opt("GUIOnEventMode",1)
 $l1 = GUICreate(translate($idioma, "Loading..."))
 GUISetState(@SW_SHOW)
@@ -66,7 +68,7 @@ global $errorsound = $device.opensound ("sounds/error.ogg", true)
 global $open = $device.opensound ("sounds/open.ogg", true)
 global $radiosound = $device.opensound ("sounds/radio.ogg", true)
 global $enableClip = 0
-global $enableClipOther = 0
+global $enableVoice = 0
 global $oldtext = ""
 Global $cliptext = ""
 sleep(10)
@@ -268,12 +270,18 @@ GUICtrlSetOnEvent(-1, "exitpersonaliced")
 Local $idmen1 = GUICtrlCreateMenu(translate($idioma, "Clipboard"))
 Global $idClip = GUICtrlCreateMenuItem(translate($idioma, "Read in loud voice..."), $idmen1)
 GUICtrlSetOnEvent(-1, "Readclip")
+Global $idClip = GUICtrlCreateMenuItem(translate($idioma, "Read in dialogue mode"), $idmen1)
+GUICtrlSetOnEvent(-1, "Readasdialogue")
+Global $idWriteToClip = GUICtrlCreateMenuItem(translate($idioma, "Send data"), $idmen1)
+GUICtrlSetOnEvent(-1, "SendData")
 global $idMonitor = GUICtrlCreateMenuItem(translate($idioma, "Monitor clipboard"), $idmen1)
 GUICtrlSetOnEvent(-1, "monitorEnable")
 Global $idMonitor2 = GUICtrlCreateMenuItem(translate($idioma, "Monitor clipboard with a independent voice"), $idmen1)
 GUICtrlSetOnEvent(-1, "monitorEnable2")
 Global $idHTS = GUICtrlCreateMenuItem(translate($idioma, "History"), $idmen1)
 GUICtrlSetOnEvent(-1, "cphistory")
+Global $idClip = GUICtrlCreateMenuItem(translate($idioma, "Read history in document mode"), $idmen1)
+GUICtrlSetOnEvent(-1, "Readasdocument")
 Local $idmen2 = GUICtrlCreateMenu(translate($idioma, "Writting and reading"))
 Local $idmen21 = GUICtrlCreateMenu(translate($idioma, "Read mode"), $idmen2)
 Global $idreadmanual = GUICtrlCreateMenuItem(translate($idioma, "Read in document mode"), $idmen21)
@@ -319,13 +327,64 @@ if $enableClip = 1 then
 $oldtext = $cliptext
 $cliptext = clipget()
 if $cliptext <> $oldtext then
-if stringLen($cliptext) > 5000 then
+$FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
+if stringLen($cliptext) > 3000 then
+if $enableVoice = 1 then
+HablarEnLetras(Translate($idioma, "The clipboard text is more than five thousand characters."))
+Else
 speaking(Translate($idioma, "The clipboard text is more than five thousand characters."))
+EndIf
+else
+If $enableVoice = 1 then
+HablarEnLetras($cliptext)
 else
 speaking($cliptext)
 EndIf
 EndIf
-sleep(10)
+FileWriteLine($fileHistory, $cliptext)
+FileClose($fileHistory)
+EndIf
+If _IsPressed($control) And _IsPressed($z) then
+speaking("undo")
+While _IsPressed($control) And _IsPressed($z)
+Sleep(100)
+WEnd
+EndIf
+If _IsPressed($control) And _IsPressed($x) Then
+speaking("It was cut " &$Cliptext)
+While _IsPressed($control) And _IsPressed($x)
+Sleep(100)
+WEnd
+EndIf
+If _IsPressed($control) And _IsPressed($c) Then
+speaking("was copied " &$Cliptext)
+While _IsPressed($control) And _IsPressed($c)
+Sleep(100)
+WEnd
+EndIf
+If _IsPressed($control) And _IsPressed($v) Then
+speaking("has been pasted " &$Cliptext & "from clipboard")
+While _IsPressed($control) And _IsPressed($v)
+Sleep(100)
+WEnd
+EndIf
+If _IsPressed($control) And _IsPressed($a) Then
+if stringLen($cliptext) > 3000 then
+speaking(Translate($idioma, "All text has been selected"))
+else
+speaking("Selected " &$cliptext)
+EndIf
+While _IsPressed($control) And _IsPressed($a)
+Sleep(100)
+WEnd
+EndIF
+If _IsPressed($control) And _IsPressed($y) Then
+speaking("Redo")
+While _IsPressed($control) And _IsPressed($y)
+Sleep(100)
+WEnd
+EndIf
+sleep(100)
 else
 ContinueLoop
 EndIf
@@ -395,4 +454,137 @@ $enableClip = 0
 Speaking(translate($idioma, "Clipboard monitoring disabled"))
 GUICtrlSetState($idMonitor, $GUI_UNCHECKED)
 EndIf
+EndFunc
+Func readclip()
+$cliptext = ClipGet()
+if $cliptext = "" then
+speaking(translate($idioma, "No text in the clipboard"))
+Else
+speaking("Contents: " &$cliptext)
+EndIf
+EndFunc
+func Readasdialogue()
+GuiSetState(@SW_Hide, $Gui_main)
+$Gui2= GuiCreate("Clipboard contents:")
+GuiSetState(@SW_SHOW)
+$cliptext = ClipGet()
+if $cliptext = "" then
+TTsDialog(translate($idioma, "No text in the clipboard"))
+Else
+TTsDialog($cliptext)
+EndIf
+GuiDelete($Gui2)
+GuiSetState(@SW_SHOW, $Gui_main)
+EndFunc
+Func ReadAsDocument()
+$gui3 = GuiCreate("Reading clipboard history")
+GuiSetState(@SW_SHOW)
+createTtsOutput("config\cliphistory.btx", "History")
+GuiDelete($gui3)
+EndFunc
+func SendData()
+GuiSetState(@SW_Hide, $Gui_main)
+global $datatosend = ""
+global $filesent = ""
+global $selectedfile=0
+global $Gui4= GuiCreate("Send data to clipboard")
+$texttosend = GUICtrlCreateLabel(translate($idioma, "Write the text to send"), 20, 50, 100, 20)
+global $sendinput = GUICtrlCreateInput("", 20, 100, 100, 20)
+global $BTN_file = GUICtrlCreateButton(translate($idioma, "Or if not, select a file"), 110, 50, 100, 20)
+GUICtrlSetOnEvent(-1, "Selectfile")
+global $BTN_Ok = GUICtrlCreateButton(translate($idioma, "OK"), 150, 50, 100, 20)
+GUICtrlSetOnEvent(-1, "OKdata")
+global $BTN_Cancel = GUICtrlCreateButton(translate($idioma, "Cancel"), 150, 50, 100, 20)
+GUICtrlSetOnEvent(-1, "CloseSendData")
+GuiSetState(@SW_SHOW)
+EndFunc
+func CloseSendData()
+GuiDelete($Gui4)
+GuiSetState(@SW_SHOW, $Gui_main)
+EndFunc
+Func Selectfile()
+$filesent = FileOpenDialog("Select a file", @scriptDir & "\", "All Files (*.*))")
+If @error Then
+MsgBox(16, "error", "you did not select any file.")
+EndIF
+Beep(1000, 50)
+Speaking("File Selected: " &$filesent)
+$selectedfile=1
+EndFunc
+func OKdata()
+If $selectedfile = 1 then
+ClipPut($filesent)
+CloseSendData()
+else
+Global $datatosend = GUICtrlRead($sendinput)
+if $datatosend ="" then
+msgbox(16, "Error", "There is no text on the clipboard. You must enter something to send.")
+else
+ClipPut($datatosend)
+CloseSendData()
+EndIF
+EndIF
+EndFunc
+Func MonitorEnable2()
+if $enableVoice = 0 then
+If FileExists(@tempDir &"\BTX-voices") then
+$enableVoice = 1
+$cliptext = clipget()
+Speaking(translate($idioma, "Use other voice enabled"))
+GUICtrlSetState($idMonitor2, $GUI_CHECKED)
+else
+$dvoices1 = MsgBox(4, "Notice", "You don't have independent voices downloaded. Would you like to do it?")
+if $dvoices1 = 6 then
+Downloadvoices()
+Else
+GUICtrlSetState($idMonitor2, $GUI_UNCHECKED)
+Speaking("To activate this function you need to have at least one voice")
+MsgBox(16, "Error", "To activate this function you need to have at least one voice")
+EndIf
+EndIf
+Else
+$enableVoice = 0
+Speaking(translate($idioma, "Use other voice disabled"))
+GUICtrlSetState($idMonitor2, $GUI_UNCHECKED)
+EndIf
+EndFunc
+func downloadvoices()
+$voicelist = InetRead("https://www.dropbox.com/s/tugjyr45vd3ez9t/voicelist.dat?dl=1")
+Local $vdata = BinaryToString($voicelist)
+global $guilist = guicreate("Download voices")
+$idlabellist = GUICtrlCreateLabel("List of available voices", 25, 50, 100, 20)
+Global $idlist = GUICtrlCreateList("", 120, 50, 120, 30)
+GUICtrlSetLimit(-1, 200)
+global $btndownload = GUICtrlCreateButton("Download", 160, 50, 120, 30)
+GuiCtrlSetOnEvent(-1, "downloadvoice")
+global $btnclose = GUICtrlCreateButton("Close", 220, 50, 120, 30)
+GuiCtrlSetOnEvent(-1, "closeddialogue")
+global $loTengo = StringSplit($vdata, ",")
+For $coloca = 1 To $loTengo[0] step 2
+GUICtrlSetData($idlist, $loTengo[$coloca])
+Next
+speaking("Loaded")
+GUISetState(@SW_SHOW)
+EndFunc
+func downloadvoice()
+$searchstr = GUICtrlRead($idList)
+$searchleng = StringLen($searchstr)
+guiDelete($guilist)
+ProgressOn(translate($idioma, "Downloading..."), "Please wait...", "0%", 100, 100, 16)
+$iPlaces = 2
+$download1 = InetGet($loTengo[2], @tempDir &"\es_default.zip", 1, 1)
+$Size = InetGetSize($loTengo[2])
+While Not InetGetInfo($download1, 2)
+Sleep(50)
+$Size2 = InetGetInfo($download1, 0)
+$Percent = Int($Size2 / $Size * 100)
+$iSize = $Size - $Size2
+ProgressSet($Percent, _GetDisplaySize($iSize, $iPlaces = 2) & " " &translate($idioma, "remaining") &$Percent & " " &translate($idioma, "percent completed"))
+WEnd
+sleep(1000)
+_Zip_UnzipAll(@tempDir &"\es_default.zip", @TempDir &"\BTX-voices", 0)
+ProgressOff()
+EndFunc
+func closeddialogue()
+GuiDelete($guilist)
 EndFunc
