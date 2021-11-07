@@ -4,6 +4,8 @@
 #include "jfw.au3"
 #include "NVDAControllerClient.au3"
 #include "sapi.au3"
+#include "translator.au3"
+global $idioma
 ;este es un script para los lectores de pantalla. this is a script for screen readers.
 ;Author: Mateo Cedillo.
 Func speaking($text)
@@ -48,24 +50,31 @@ speaking($text & @LF & $ttsString)
 While 1
 $active_window = WinGetProcess("")
 If $active_window = @AutoItPID Then
-If Not _IsPressed($spacebar) Or Not _IsPressed($up) Or Not _IsPressed($down) Or Not _IsPressed($left) Or Not _IsPressed($right) Then $repeatinfo = 0
-If _IsPressed($spacebar) Or _IsPressed($up) Or _IsPressed($down) Or _IsPressed($left) Or _IsPressed($right) And $repeatinfo = 0 Then
-$repeatinfo = 1
+Else
+Sleep(10)
+ContinueLoop
+EndIf
+If _IsPressed($spacebar) Or _IsPressed($up) Or _IsPressed($down) Or _IsPressed($left) Or _IsPressed($right) Then
 speaking($text & @LF & $ttsString)
+While _IsPressed($spacebar) Or _IsPressed($up) or _IsPressed($down) Or _IsPressed($left) Or _IsPressed($right)
+Sleep(100)
+WEnd
 EndIf
-If Not _IsPressed($control) And _IsPressed($c) Then $pressed = 0
-If _IsPressed($control) And _IsPressed($c) And $pressed = 0 Then
+If _IsPressed($control) And _IsPressed($c) Then
 ClipPut($text)
-speaking($text & "Copied to clipboard.")
+speaking($text &" " &translate($idioma, "Copied to clipboard."))
+While _IsPressed($control) And _IsPressed($c)
+Sleep(100)
+WEnd
 EndIf
-If Not _IsPressed($enter) Then $pressed = 0
-If _IsPressed($enter) And $pressed = 0 Then
-$pressed = 1
+If _IsPressed($enter) Then
 speaking("ok")
 ExitLoop
+While _IsPressed($enter)
+Sleep(100)
+WEnd
 EndIf
-EndIf
-Sleep(50)
+Sleep(10)
 WEnd
 EndFunc   ;==>TTsDialog
 Func createTtsOutput($filetoread, $title)
@@ -77,15 +86,16 @@ $docError=0
 $selectionmode = 0
 local $textselected=""
 If @error Then
-speaking("Error reading file...")
+speaking(translate($idioma, "Error reading file..."))
 writeinlog("error reading file...")
 $DocError=1
 Else
-speaking($title)
+speaking($title &" " &translate($idioma, "document.") &@crlf &translate($idioma, "Selection mode off"))
 writeinlog("Dialog: " & $title)
 writeinlog("file: " & $filetoread)
 writeinlog("File information: Lines: " & $iCountLines)
 EndIf
+hotkeyset("{f1}")
 While 1
 if $DocError=1 then exitLoop
 $active_window = WinGetProcess("")
@@ -94,12 +104,16 @@ Else
 Sleep(10)
 ContinueLoop
 EndIf
-If Not _IsPressed($shift) And _IsPressed($down) Then $not = 1
-If Not _IsPressed($shift) And _IsPressed($up) Then $not = 1
+If _IsPressed($f1) then
+Speaking(translate($idioma, "Use the up and down arrows to read the document.") &@crlf &translate($idioma, "Use the home and end keys to go to the beginning or end of the document.") &@crlf &translate($idioma, "Use page up and page down to go forward or backward ten lines.") &@crlf &translate($idioma, "Use control + shift + s to open selection mode, which will allow you to select multiple text marks and perform editing commands and operations.") &@crlf &translate($idioma, "Use the l key to speak the line number you are on.") &@crlf &translate($idioma, "Use the editing commands to cut, copy, paste and select all the text."))
+While _IsPressed($f1)
+Sleep(100)
+WEnd
+EndIf
 If _IsPressed($home) then
 If $selectionmode=1 then
 if not $textselected = "" then
-Speaking("Unselected")
+Speaking(translate($idioma, "Unselected"))
 $textselected = ""
 EndIf
 EndIF
@@ -114,7 +128,7 @@ If _IsPressed($page_down) Then
 $move_doc = $move_doc +10
 if $move_doc >= $iCountLines then
 $move_doc = $iCountLines -1
-speaking("document end. Press enter to back.")
+speaking(translate($idioma, "document end. Press enter to back."))
 EndIF
 speaking($r_file[$move_doc])
 writeinlog($move_doc)
@@ -134,12 +148,12 @@ EndIf
 If _IsPressed($end) Then
 If $selectionmode = 1 then
 if not $textselected = "" then
-Speaking("Unselected")
+Speaking(translate($idioma, "Unselected"))
 $textselected = ""
 EndIf
 EndIf
 $move_doc = $iCountLines -1
-speaking($r_file[$move_doc] &@crlf &"document end. Press enter to back.")
+speaking($r_file[$move_doc] &@crlf &translate($idioma, "document end. Press enter to back."))
 writeinlog($move_doc)
 While _IsPressed($end)
 Sleep(100)
@@ -148,12 +162,12 @@ EndIf
 If _IsPressed($up) Then
 $move_doc = $move_doc - 1
 if $move_doc <= 0 then
-If $selectionmode=1 then speaking("You have reached the home of the document, there is nothing else to select.")
+If $selectionmode=1 then speaking(translate($idioma, "You have reached the home of the document, there is nothing else to select."))
 $move_doc="0"
 EndIf
 If $selectionmode=1 then 
 $textselected &= $r_file[$move_doc] &@crlf
-speaking("Was selected " &$r_file[$move_doc])
+speaking(translate($idioma, "Was selected") &" " &$r_file[$move_doc])
 Else
 speaking($r_file[$move_doc])
 writeinlog($move_doc)
@@ -166,13 +180,13 @@ EndIf
 If _IsPressed($down) then
 $move_doc = $move_doc +1
 if $move_doc >= $iCountLines then
-If $selectionmode=1 then speaking("You have reached the end of the document, there is nothing else to select.")
+If $selectionmode=1 then speaking(translate($idioma, "You have reached the end of the document, there is nothing else to select."))
 speaking("document end. Press enter to back.")
 $move_doc=$iCountLines -1
 EndIF
 If $selectionmode = 1 then
 $textselected &= $r_file[$move_doc] &@crlf
-speaking("Was selected " &$r_file[$move_doc])
+speaking(translate($idioma, "Was selected") &" " &$r_file[$move_doc])
 else
 speaking($r_file[$move_doc])
 writeinlog($move_doc)
@@ -182,12 +196,18 @@ If $selectionmode = 1 then beep(4000, 50)
 Sleep(100)
 WEnd
 EndIf
+If _IsPressed($l) then
+Speaking(translate($idioma, "Line:") &" " &$move_doc)
+While _IsPressed($l)
+Sleep(100)
+WEnd
+EndIf
 If _IsPressed($control) And _IsPressed($c) then
 if $textSelected = "" then
-Speaking("You have not selected text to copy!")
+Speaking(translate($idioma, "You have not selected text to copy!"))
 Else
 ClipPut($textselected)
-Speaking("the text has been copied to that clipboard")
+Speaking(translate($idioma, "the text has been copied to that clipboard"))
 if $selectionmode=1 then $selectionmode=0
 EndIf
 While _IsPressed($control) And _IsPressed($c)
@@ -195,11 +215,11 @@ Sleep(100)
 WEnd
 EndIf
 If _IsPressed($control) And _IsPressed($a) Then
-speaking("Selecting all...")
+speaking(translate($idioma, "Selecting all..."))
 for $selecting = 0 to $iCountLines - 1
 $textselected = $r_file[$selecting]
 Next
-Speaking("All text was selected")
+Speaking(translate($idioma, "All text was selected"))
 if $selectionmode=1 then $selectionmode=0
 While _IsPressed($control) And _IsPressed($a)
 Sleep(100)
@@ -207,10 +227,10 @@ WEnd
 EndIf
 If _IsPressed($control) And _IsPressed($shift) And _IsPressed($s) Then
 if not $selectionmode = 0 then
-Speaking("He left the selection mode")
+Speaking(translate($idioma, "He left the selection mode"))
 $selectionmode=0
 Else
-speaking("Entered to the selection mode")
+speaking(translate($idioma, "Entered to the selection mode"))
 $selectionmode=1
 EndIf
 While _IsPressed($control) And _IsPressed($shift) And _IsPressed($s)

@@ -1,0 +1,80 @@
+Manual de usuario:
+¿Qué es esto?
+Blind text (texto a ciegas) es un software de código abierto, enfocado especialmente para personas con discapacidad visual, que te permite:
+tener un fácil acceso a tu contenido como tus documentos mediante la lectura en voz alta
+Modifica, exporta y convierte texto en la forma en que desees.
+Exportar documentos a formatos como texto plano (txt, log), o documentos web (HTML y Mark Down).
+Conversor de texto a audio en alta calidad (MP3/WAV).
+Interactuar con documentos, usando los modos de lectura y selección (ver más abajo).
+Y tiene una variedad de herramientas como el lector e historial de portapapeles así como un pequeño sintetizador de voz independiente (beta).
+¿Cómo usar?
+Lo primero es extraer el archivo zip del programa en una carpeta y abrir blindtext.exe
+El programa busca si hay tanto actualizaciones disponibles como pendientes para instalar y te informará cuando lo ejecutes.
+Lo siguiente es seleccionar nuestro idioma de preferencia para el programa. Inglés y español por el momento. Puedes añadir más idiomas creando una plantilla de traducción y enviando un archivo a "errores y sugerencias" (ver más abajo).
+Una vez completada la configuración se te llevará a la ventana principal en la que puedes acceder a todas las funciones:
+Abrir el menú: Explora todas las funciones del programa.
+Cambios: Abre un documento con los cambios más recientes.
+Manual del usuario: Abre el presente documento.
+GitHub: Abre mi usuario de GitHub en tu navegador, En él puedes explorar este y más cosas de código abierto.
+Compartir: Comparte esta aplicación a redes sociales.
+Salir: Sale del programa.
+Explorando todas las funciones:
+Submenú de Blind Text:
+Opciones: En este apartado puedes configurar opciones del programa, activar el historial de portapapeles, seleccionar salida de voz, etc.
+Salir: Así mismo, sale del programa.
+Submenú portapapeles:
+Leer en voz alta: Lee el contenido del portapapeles en voz alta con tu lector de pantalla en uso o sapi.
+Leer en modo diálogo: Lee el contenido del portapapeles como si fuese un cuadro de diálogo.
+Enviar datos: Envía datos al portapapeles, texto o archivo.
+Monitorear portapapeles: Activada esa opción se te capturará lo que haya en el portapapeles, en caso de que se encuentre texto o contenido nuevo, para ser verbalizado por el lector de pantalla o la voz independiente.
+Monitorear portapapeles con una voz independiente: Usa el sintetizador de voz integrado en el programa en lugar del lector de pantalla.
+Notas:
+1. Para activar esta opción primero debemos tener encendido el monitoreo de portapapeles a secas, es decir la opción anterior mencionada, caso contrario no funcionará ya que no está recibiendo los contenidos.
+2. Para esta característica se necesita tener una voz como mínimo descargada. No te preocupes por esto, te avisará el mismo programa. Solo sigue las instrucciones.
+3. Para que el sintetizador independiente funcione de forma correcta, es necesario contar con un pc de buen CPU y rendimiento, caso contrario el audio podría entrecortarse en algunas ocasiones.
+Historial: Abre el administrador del historial del portapapeles donde puedes administrarlo, exportarlo, copiar un fragmento o verbalizarlo.
+Leer historial en modo documento: A diferencia de la opción anterior, en esta puedes leer los contenidos del historial de forma más cómoda y como bien se explicó en la introducción te permite interactuar con ese tipo de documentos.
+Submenú Escritura y lectura:
+menú modo de lectura:
+Leer en modo documento: Te permite abrir y leer el documento de tu elección, con interfaz diferente a lo acostumbrado.
+Leer en modo audio: Abre un documento y lee con la voz predeterminada del sistema. También puedes configurar parámetros como la velocidad, el volumen o convertir en formato audio.
+Leer con una voz independiente: Así mismo, puedes abrir un documento de texto y leer con el sintetizador del programa.
+Nota: En esta versión solo se soporta textos de máximo dos mil caracteres para leer con el sintetizador.
+Menú escritura:
+Escribir un nuevo archivo: Te permite crear un nuevo documento. Puedes escribir y guardar su contenido.
+Editar archivo: Te permite editar un documento de tu elección y guardarlo.
+Submenú ayuda:
+Acerca de: Muestra información del programa.
+Visitar sitio web: Abre mi página web en tu navegador donde puedes tener acceso a más contenido como programas, visitar el blog, etc.
+Manual del usuario: Muestra en pantalla el presente documento.
+Cambios: Abre el documento de cambios.
+Errores y sugerencias: Por si deseas comentar un error con este programa, hacer una sugerencia, enviar archivos. Pues aquí tienes esta opción.
+Para completar el formulario, solo sigue los pasos que se indican. Nombre de aplicación, Correo electrónico, nombre, mensaje y si es posible puedes enviar un archivo, ya sea de idioma o registro.
+Creación de traducción:
+Para crear una traducción, por favor te recomiendo que le heches un vistazo al documento Translation guide que se encuentra en la carpeta "lng del programa".
+Aprendiendo a interactuar con un documento:
+Cuando estás leyendo el historial del portapapeles o un archivo, te darás cuenta que estás en modo documento porque tu lector de pantallas te verbalizará el título del texto junto con la palabra "documento". Esto quiere decir que ya estás en este modo. A continuación te detallamos los comandos de uso:
+F1: Verbaliza un resumen de los comandos disponibles.
+Flechas arriba o abajo: Te permite leer la línea anterior o siguiente.
+Inicio o fin: Se mueve al inicio o al final del documento.
+Retroceso y avance de página: Retrocede o avanza diez líneas.
+Tecla l: Te informa el número de línea que está posicionado el cursor.
+Control+Shift+S: Activa o desactiva el modo de selección.
+Una vez activado el modo de selección, El comportamiento de algunos comandos cambia y se suman otros, por ejemplo:
+flechas arriba y abajo: selecciona la línea anterior o siguiente del documento.
+Inicio y fin: Deselecciona todas las marcas de texto.
+Control+A: Selecciona todo el texto.
+Control+c: Copia una o múltiples marcas del texto seleccionado, o todo si se presionó control+a anteriormente.
+Aprendiendo a seleccionar una o varias marcas.
+Para seleccionar marcas de texto consiste de un método sencillo:
+1. Con el modo de selección desactivado, posiciónate en la línea donde quieres comenzar la marca. Pero antes, debes calcularla. Es decir, desde dónde a dónde quieres seleccionar (en líneas).
+2. Activa el modo de selección. Una vez hecho, recuerda el cálculo de tu marca y ponla en práctica seleccionando cada línea hasta llegar a la que deseas.
+Si ya has terminado y no quieres seleccionar nada más, presiona control c y se te copiará la marca creada. Caso contrario, si quieres agregar otra con otros fragmentos de texto.
+1. Desactiva el modo de selección.
+2. Ahora calcula otra marca diferente a la anterior, con otros fragmentos de texto leyendo con las flechas. Una vez decidido posiciónate desde donde quieras comenzar a hacer la marca y activa nuevamente el modo de selección.
+3. De nuevo, selecciona tu marca con flecha arriba o abajo.
+Puedes repetir el proceso varias veces y crear las marcas que quieras, y una vez presionado control c sobre ellas y el modo de selección activado lo que ocurre es que este se desactivará, finalizará con tu creación y como resultado final, quedará en tu portapapeles el fragmento o fragmentos que has creado.
+Nota: Ten cuidado al presionar inicio o fin cuando estés creando marcas, ¡porque estas se borrarán!
+Conclusión:
+Esta suite de herramientas te puede facilitar en algunas tareas para la lectura, escritura y edición de texto. Si hay algo que deba mejorar, encuentras un error o sugieres algo envía un mensaje a errores y sugerencias.
+Fin.

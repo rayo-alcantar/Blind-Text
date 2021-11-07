@@ -1,3 +1,4 @@
+#include-once
 ; This file has no functions, it is simply used to initialize COMAudio, the com library that ; I use for audio playback. All it does is to register the object using regsvr32, and then 
 ; it initializes it.
 $comaudio = ObjCreate("ComAudio.Service")
@@ -12,6 +13,6 @@ Exit
 EndIf
 endif
 ;$comaudio.archiveExtension = "sounds.dat"
-;$comaudio.UseEncryption = true
-;$comaudio.EncryptionKey = "superpollo"
+$comaudio.UseEncryption = true
+$comaudio.EncryptionKey = "superpollo"
 $device = $comaudio.openDevice("","")

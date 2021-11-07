@@ -1,0 +1,79 @@
+User manual:
+What is this?
+Blind text is open source software, focused especially for people with visual disabilities, that allows you to:
+have easy access to your content such as your documents by reading aloud.
+Modify, export and convert text the way you want.
+Export documents to formats such as plain text (txt, log), or web documents (html and Mark Down).
+High quality text to audio converter (MP3 / WAV).
+Interact with documents, using the reading and selection modes (see more velow).
+And it has a variety of tools like clipboard reader and history as well as a small standalone speech synthesizer (beta).
+How to use?
+The first thing is to extract the zip file of the program in a folder and open blindtext.exe
+The program searches for both available and pending updates to install and will inform you when you run it.
+The next thing is to select our preferred language for the program. English and Spanish for the moment. You can add more languages by creating a translation and sending a file to "errors and suggestions" (see more velow).
+Once the configuration is complete, you will be taken to the main window where you can access all the functions:
+Open the menu: Explore all the functions of the program.
+Changes: Opens a document with the most recent changes.
+User Manual: Opens this document.
+GitHub: Open my GitHub user in your browser, In it you can explore this and more open source stuff.
+Share: Share this application to social networks.
+Exit: Exits the program.
+Exploring all functions:
+Blind Text submenu:
+Options: In this section you can configure program options, activate the clipboard history, select voice output, etc.
+Exit: Also, exit the program.
+Clipboard submenu:
+Read aloud: Read the clipboard content aloud with your current screen reader or sapi.
+Read in dialog mode: Read the contents of the clipboard as if it were a dialog box.
+Send data: Send data to clipboard, text or file.
+Monitor clipboard: If this option is activated, whatever is on the clipboard will be captured, in case new text or content is found, to be spoken by the screen reader or the independent voice.
+Monitor clipboard with a independent voice: Use the program's built-in speech synthesizer instead of the screen reader.
+Notes:
+1. To activate this option we must first have the clipboard monitoring turned on, that is, the previous option mentioned, otherwise it will not work since it is not receiving the contents.
+2. For this feature you need to have at least one voice downloaded. Do not worry about this, the same program will notify you. Just follow the instructions.
+3. For the standalone synthesizer to work properly,you need a pc with a good CPU and performance, otherwise the audio could be choppy sometimes.
+History: Opens the clipboard history manager.
+Read history in document mode: Unlike the previous option, in this option you can read the contents of the history more comfortably and, as explained in the introduction, it allows you to interact with these types of documents.
+Writing and reading submenu:
+reading mode menu:
+Read in document mode: It allows you to open and read the document of your choice, with a different interface than usual.
+Read in audio mode: Open a document and read with the system's default voice. You can also configure parameters such as speed, volume or convert to audio format.
+Read with an independent voice: Likewise, you can open a text document and read with the program's synthesizer.
+Note: This version only supports texts with a maximum of two thousand characters to read with the synthesizer.
+Write menu:
+Write a new file: Allows you to create a new document. You can write and save your content.
+Edit file: Allows you to edit a document of your choice and save it.
+Help submenu:
+About: Shows program information.
+Visit website: Open my website in your browser where you can access more content such as programs, visit the blog, etc.
+User Manual: Displays this document on the screen.
+Changes: Opens the changes document.
+Errors and suggestions: In case you want to comment on an error with this program, make a suggestion, send files. Well here you have this option.
+To complete the form, just follow the steps indicated. Application name, Email, name, message and if possible you can send a file, either language or log.
+Translation creation:
+To create a translation, please take a look at the Translation guide document found in the "lng of the program" folder.
+Learning to interact with a document:
+When you are reading the history of the clipboard or a file, you will realize that you are in document mode because your screen reader will speak the title of the text together with the word "document". This means that you are already in this mode. Here are the commands for use:
+F1: Speaks a summary of the available commands.
+Up or down arrows: Allows you to read the previous or next line of the selected document.
+Start or end: Moves to the beginning or end of the document.
+Page Up and Down: Go back or forward ten lines in the document.
+L key: It informs you of the line number where the cursor is positioned.
+Control + Shift + S: Activate or deactivate selection mode.
+Once the selection mode is activated, the behavior of some commands changes and others are added, for example:
+Up and Down arrows: select the previous or next line of the document.Start and end: Deselect all text marks.
+Control + A: Select all the text.
+Control + c: Copies one or multiple marks of the selected text, or all if control + a was pressed previously.
+Learning to select one or more text marks.
+To select text marks consists of a simple method:
+1. With the selection mode deactivated, position yourself on the line where you want to start the mark. But first, you must calculate it. That is, from where to where you want to select (in lines).
+2. Activate selection mode. Once done, remember the calculation of your brand and put it into practice by selecting each line until you reach the one you want.
+If you are done and do not want to select anything else, press control c and the created mark will be copied to you. Otherwise, if you want to add another with other text fragments.
+1. Deactivate selection mode.
+2. Now calculate another mark different from the previous one, with other pieces of text reading with the arrows. Once decided, position yourself from where you want to start making the mark and activate the selection mode again.
+3. Again, select your brand with up arrow or avajo.
+You can repeat the process several times and create the marks you want, and once you have pressed control c on them and the selection mode activated, what happens is that it will be deactivated, it will end with your creation and as a final result, the fragment or fragments you have created.
+Note: Be careful when pressing start or end when creating bookmarks, because these will be erased!
+Conclusion:
+This suite of tools may make it easier for you to read, write and edit text. If there is something that needs to be improved, you find an error or suggest something, send a message to errors and suggestions.
+End.

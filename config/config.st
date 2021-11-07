@@ -1,8 +1,9 @@
 [General settings]
-Save Logs=No
+Save Logs=Yes
 Check updates=Yes
-
 language=Es
+[Clipboard settings]
+Enable clipboard history=Yes
 [misc]
 motdversion=1
 [accessibility]
