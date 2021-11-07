@@ -13,17 +13,17 @@ GUISetState(@SW_SHOW)
 sleep(10)
 Local $yourexeversion = FileGetVersion($s_executable)
 select
-case $sLanguage ="es"
+case $idioma ="es"
 $newversion=" Tienes la "
 $newversion2=", y está disponible la "
-case $sLanguage ="eng"
+case $idioma ="eng"
 $newversion=" You have the version "
 $newversion2=", And is available the "
 endselect
 $fileinfo = InetGet($s_DatURL, $S_Program &"Web.dat")
 FileCopy($s_Program &"Web.dat", @TempDir & "\" &$S_Program &"Web.dat")
 $latestver = iniRead (@TempDir & "\" &$S_program &"Web.dat", "updater", "LatestVersion", "")
-if $sLanguage ="Es" then
+if $idioma ="Es" then
 if $ReadAccs ="Yes" then
 select
 Case $latestVer = 0
@@ -37,7 +37,7 @@ speak("estás actualizado. Tienes la última versión.")
 endselect
 endif
 endif
-if $sLanguage ="Eng" then
+if $idioma ="Eng" then
 select
 Case $latestVer = 0
 speak("version could not be checked.")
@@ -50,7 +50,7 @@ speak("you are up to date.")
 endselect
 endif
 if $ReadAccs ="No" then
-if $sLanguage ="Es" then
+if $idioma ="Es" then
 select
 Case $latestVer = 0
 msgbox(0, "Error", "no se ha podido comprovar versión.")
@@ -64,7 +64,7 @@ msgbox(0, "estás actualizado", "no hay actualización por el momento.")
 endselect
 endif
 endif
-if $sLanguage ="Eng" then
+if $idioma ="Eng" then
 select
 Case $latestVer = 0
 msgbox(0, "Error", "version could not be checked.")
@@ -100,7 +100,7 @@ If (Int($iTotalDownloaded) = 0) Then Return Round($iTotalDownloaded * 1024, $iPl
 Next
 EndFunc
 func _Updater_Update($S_executable, $S_URLinstallable, $S_URLPortable)
-ProgressOn(translate($idioma, "Downloading update.", "Please wait..."), "0%", 100, 100, 16)
+ProgressOn(translate($idioma, "Downloading update."), translate($idioma, "Please wait..."), "0%", 100, 100, 16)
 $iPlaces = 2
 $AppUrl = $S_URLPortable
 $fldr = 'MCExtract.exe'
@@ -117,7 +117,7 @@ speaking(translate($idioma, "FileSize in bites:") &" " &$URLSize & ". " &transla
 msgbox (0, "Information", translate($idioma, "FileSize in bites:") &" " &$URLSize & ". " &translate($idioma, "Downloaded:") &" " &$Size &". " &translate($idioma, "Progress:") &" " &$Percentage &"%. " &translate($idioma, "Remaining size:") &" " &$iSize)
 endif
 WEnd
-ProgressSet(90, translate($idioma, "ending up..."), translate($idioma, "Please wait...")
+ProgressSet(90, translate($idioma, "ending up..."), translate($idioma, "Please wait..."))
 ProgressSet(99, translate($idioma, "Installing update."), translate($idioma, "Please wait while the program updates"))
 sleep(3000)
 $process = ProcessExists($s_Executable)
@@ -131,11 +131,11 @@ run("MCExtract.exe")
 ;_exitpersonaliced()
 endfunc
 func DownloadEMK()
-$sLanguage = iniRead ("config\config.st", "General settings", "language", "")
+$idioma = iniRead ("config\config.st", "General settings", "language", "")
 select
-case $sLanguage ="Es"
+case $idioma ="Es"
 ProgressOn("Descargando actualización.", "espera...", "0%", 100, 100, 16)
-case $sLanguage ="Eng"
+case $idioma ="Eng"
 ProgressOn("Downloading update.", "Please wait...", "0%", 100, 100, 16)
 endSelect
 $iPlaces = 2
@@ -150,10 +150,10 @@ $Size = InetGetInfo($hInet, 0)
 $Percentage = Int($Size / $URLSize * 100)
 $iSize = $URLSize - $Size
 select
-case $sLanguage ="Es"
+case $idioma ="Es"
 $m2="Descargando..."
 ProgressSet($Percentage, $m2, _GetDisplaySize($iSize, $iPlaces = 2) & " restante(s) " & $Percentage & " porciento completado")
-case $sLanguage ="Eng"
+case $idioma ="Eng"
 ProgressSet($Percentage, _GetDisplaySize($iSize, $iPlaces = 2) & " remaining " & $Percentage & " percent completed.")
 endselect
 If _ispressed($I) Then
@@ -161,15 +161,15 @@ msgbox (0, "Information", "FileSize in bites:" & $URLSize & ". Downloaded: " & $
 endif
 WEnd
 select
-case $sLanguage ="Es"
+case $idioma ="Es"
 ProgressSet(90, "Acabando", "Acabando...")
-case $sLanguage ="Eng"
+case $idioma ="Eng"
 ProgressSet(90, "ending up", "ending up... Please wait.")
 endselect
 select
-case $sLanguage ="Es"
+case $idioma ="Es"
 ProgressSet(99, "Instalando la actualización.", "Emulate keys se está instalando.")
-case $sLanguage ="Eng"
+case $idioma ="Eng"
 ProgressSet(99, "Installing update.", "Emulate keys is installing.")
 endselect
 sleep(3000)

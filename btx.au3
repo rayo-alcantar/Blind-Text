@@ -18,21 +18,27 @@
 ;Btx
 ;By Mateo Cedillo
 ;This little program is a suite of utilities with various tools and functions.
+#pragma compile(Out, BlindText.exe)
 ; #pragma compile(Icon, C:\Program Files\AutoIt3\Icons\au3.ico)
 #pragma compile(UPX, False)
 ;#pragma compile(Compression, 2)
-;#pragma compile(inputboxres, false)
+#pragma compile(inputboxres, false)
 #pragma compile(FileDescription, Blind Text)
 #pragma compile(ProductName, Blind Text)
 #pragma compile(ProductVersion, 0.1.0.0)
-#pragma compile(Fileversion, 0.1.0.0)
+#pragma compile(Fileversion, 0.1.0.4)
 #pragma compile(InternalName, "mateocedillo.BTX")
 #pragma compile(LegalCopyright, © 2018-2021 MT Programs, All rights reserved)
 #pragma compile(CompanyName, 'MT Programs')
+#pragma compile(OriginalFilename, BlindText.exe)
+global $programname="Blind text"
+global $program_ver = "0.1"
+global $cpt_ver = "2021.11.5.0"
 $idioma = iniRead ("config\config.st", "General settings", "language", "")
 ;Include
 #include "include\audio.au3"
 #include <AutoItConstants.au3>
+#include "include\cliphistory.au3"
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
 #Include <fileConstants.au3>
@@ -42,24 +48,31 @@ $idioma = iniRead ("config\config.st", "General settings", "language", "")
 #include <include\menu_nvda.au3>
 #include <misc.au3>
 #include <include\NVDAControllerClient.au3>
+#include "include\options.au3"
 #include "include\progress.au3"
 #include <include\reader.au3>
 #include <include\sapi.au3>
 #include "include\share.au3"
+#include <SliderConstants.au3>
 #include "include\sintesizer.au3"
 #include "include\translator.au3"
 #include "updater.au3"
+#include "include\Utter.au3"
 #include <WindowsConstants.au3>
 #include "include\zip.au3"
 Opt("GUIOnEventMode",1)
 $l1 = GUICreate(translate($idioma, "Loading..."))
 GUISetState(@SW_SHOW)
-global $programname="Blind text"
-global $program_ver = "0.1"
 global $ifitisupdate = IniRead("Config\config.st", "General settings", "Check updates", "")
 If $ifitisupdate = "" then
 IniWrite("Config\config.st", "General settings", "Check updates", "Yes")
 $ifitisupdate = "yes"
+EndIF
+global $enablehst = IniRead("Config\config.st", "Clipboard settings", "Enable clipboard history", "")
+If $enablehst = "" then
+IniWrite("Config\config.st", "Clipboard settings", "Enable clipboard history", "Yes")
+$enablehst = "yes"
+else
 EndIF
 global $soundclose = $device.opensound ("sounds/close.ogg", true)
 global $SCHECKBOX = $device.opensound ("sounds/CHECKBOX.ogg", true)
@@ -67,6 +80,7 @@ global $SCHECKBOX2 = $device.opensound ("sounds/CHECKBOX_unchecked.ogg", true)
 global $errorsound = $device.opensound ("sounds/error.ogg", true)
 global $open = $device.opensound ("sounds/open.ogg", true)
 global $radiosound = $device.opensound ("sounds/radio.ogg", true)
+global $scrollsound = $device.opensound ("sounds/scrollTop.ogg", 0)
 global $enableClip = 0
 global $enableVoice = 0
 global $oldtext = ""
@@ -94,7 +108,11 @@ $questupd = msgBox(4, translate($idioma, "pending update"), translate($idioma, "
 If $questupd = 6 Then
 IniWrite("Config\config.st", "Update", "Pending installation", "completed")
 ShellExecute("BTXExtract.exe")
-;exitpersonaliced()
+if @error then
+MSgBox(16, "Error", "Can't run the update package! I think you have to download the program manually.")
+exitpersonaliced()
+else
+EndIf
 endIF
 else
 FileDelete("BTXExtract.exe")
@@ -164,7 +182,6 @@ $langcodes[$busqueda] = GetLanguageCode($splitcode)
 CreateAudioProgress($beep)
 Sleep(100)
 WEnd
-GUISetState(@SW_SHOW)
 $langcount = StringSplit($obteniendo, "|")
 global $Choose = GUICtrlCreateCombo("", 100, 50, 200, 30, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GuiCtrlSetOnEvent(-1, "seleccionar")
@@ -173,6 +190,7 @@ global $idBtn_OK = GUICtrlCreateButton("OK", 155, 50, 70, 30)
 GuiCtrlSetOnEvent(-1, "save")
 global $idBtn_Close = GUICtrlCreateButton("Close", 180, 50, 70, 30)
 GuiCtrlSetOnEvent(-1, "exitpersonaliced")
+GUISetState(@SW_SHOW)
 Global $LEER = ""
 while 1
 if $seleccionado="1" then
@@ -290,11 +308,11 @@ Global $idreadAudio = GUICtrlCreateMenuItem(translate($idioma, "Read in audio mo
 GUICtrlSetOnEvent(-1, "readinaudio")
 Global $idreadOther = GUICtrlCreateMenuItem(translate($idioma, "Read with an independent voice"), $idmen21)
 GUICtrlSetOnEvent(-1, "readinvoice")
-Local $idmen22 = GUICtrlCreateMenu(translate($idioma, "Write"), $idmen2)
-Global $idWritenew = GUICtrlCreateMenuItem(translate($idioma, "Write a new file..."), $idmen22)
-GUICtrlSetOnEvent(-1, "Writefile")
-Global $idEdit = GUICtrlCreateMenuItem(translate($idioma, "edit file..."), $idmen22)
-GUICtrlSetOnEvent(-1, "Editfile")
+;Local $idmen22 = GUICtrlCreateMenu(translate($idioma, "Write"), $idmen2)
+;Global $idWritenew = GUICtrlCreateMenuItem(translate($idioma, "Write a new file..."), $idmen22)
+;GUICtrlSetOnEvent(-1, "Writefile")
+;Global $idEdit = GUICtrlCreateMenuItem(translate($idioma, "edit file..."), $idmen22)
+;GUICtrlSetOnEvent(-1, "Editfile")
 Local $idHelpmenu = GUICtrlCreateMenu(translate($idioma, "Help"))
 Local $idHelpitema = GUICtrlCreateMenuItem(translate($idioma, "About..."), $idHelpmenu)
 GUICtrlSetOnEvent(-1, "ayuda")
@@ -306,6 +324,8 @@ Local $idChanges = GUICtrlCreateMenuItem(translate($idioma, "Changes"), $idHelpm
 GUICtrlSetOnEvent(-1, "readchanges2")
 local $idBGR = GUICtrlCreateMenuItem(translate($idioma, "Errors and suggestions"), $idHelpmenu)
 GUICtrlSetOnEvent(-1, "Report")
+local $idBGR = GUICtrlCreateMenuItem(translate($idioma, "Errors and suggestions (GitHub)"), $idHelpmenu)
+GUICtrlSetOnEvent(-1, "newIssue")
 GUICtrlCreateLabel(translate($idioma, "Open the menu or explore the following options:"), 20, 50)
 GUICtrlSetState(-1, $GUI_FOCUS)
 Local $idMenubtn = GUICtrlCreateButton(translate($idioma, "Open menu"), 20, 50 + (1 * 40), 100, 30)
@@ -327,12 +347,12 @@ if $enableClip = 1 then
 $oldtext = $cliptext
 $cliptext = clipget()
 if $cliptext <> $oldtext then
-$FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
+if $enablehst = "yes" then $FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
 if stringLen($cliptext) > 3000 then
 if $enableVoice = 1 then
-HablarEnLetras(Translate($idioma, "The clipboard text is more than five thousand characters."))
+HablarEnLetras(Translate($idioma, "The clipboard text is more than three thousand characters."))
 Else
-speaking(Translate($idioma, "The clipboard text is more than five thousand characters."))
+speaking(Translate($idioma, "The clipboard text is more than three thousand characters."))
 EndIf
 else
 If $enableVoice = 1 then
@@ -341,29 +361,31 @@ else
 speaking($cliptext)
 EndIf
 EndIf
+if $enablehst = "yes" then
 FileWriteLine($fileHistory, $cliptext)
 FileClose($fileHistory)
 EndIf
+EndIf
 If _IsPressed($control) And _IsPressed($z) then
-speaking("undo")
+speaking(translate($idioma, "undo"))
 While _IsPressed($control) And _IsPressed($z)
 Sleep(100)
 WEnd
 EndIf
 If _IsPressed($control) And _IsPressed($x) Then
-speaking("It was cut " &$Cliptext)
+speaking(translate($idioma, "It was cut") &" " &$Cliptext)
 While _IsPressed($control) And _IsPressed($x)
 Sleep(100)
 WEnd
 EndIf
 If _IsPressed($control) And _IsPressed($c) Then
-speaking("was copied " &$Cliptext)
+speaking(translate($idioma, "was copied") &" " &$Cliptext)
 While _IsPressed($control) And _IsPressed($c)
 Sleep(100)
 WEnd
 EndIf
 If _IsPressed($control) And _IsPressed($v) Then
-speaking("has been pasted " &$Cliptext & "from clipboard")
+speaking(translate($idioma, "has been pasted") &" " &$Cliptext & "from clipboard")
 While _IsPressed($control) And _IsPressed($v)
 Sleep(100)
 WEnd
@@ -372,14 +394,14 @@ If _IsPressed($control) And _IsPressed($a) Then
 if stringLen($cliptext) > 3000 then
 speaking(Translate($idioma, "All text has been selected"))
 else
-speaking("Selected " &$cliptext)
+speaking(translate($idioma, "Selected") &" " &$cliptext)
 EndIf
 While _IsPressed($control) And _IsPressed($a)
 Sleep(100)
 WEnd
 EndIF
 If _IsPressed($control) And _IsPressed($y) Then
-speaking("Redo")
+speaking(translate($idioma, "Redo"))
 While _IsPressed($control) And _IsPressed($y)
 Sleep(100)
 WEnd
@@ -395,9 +417,11 @@ Send("{alt}")
 EndFunc
 func github()
 ShellExecute("https://github.com/rmcpantoja/")
+If @error then MsgBox(16, "Error", "Cannot run browser. It is likely that you have to add an association.")
 EndFunc
 Func Website()
 ShellExecute("http://mateocedillo.260mb.net/")
+If @error then MsgBox(16, "Error", "Cannot run browser. It is likely that you have to add an association.")
 EndFunc
 func shareapp()
 $shareresult = share(translate($idioma, "I share with you the blind text (beta) program for the blind where you can have access to a variety of tools for word processing, such as reading and writing."), "http://mateocedillo.260mb.net/BTX.zip")
@@ -457,16 +481,21 @@ EndIf
 EndFunc
 Func readclip()
 $cliptext = ClipGet()
-if $cliptext = "" then
+if @error = "1" then
 speaking(translate($idioma, "No text in the clipboard"))
 Else
-speaking("Contents: " &$cliptext)
+if StringLen($cliptext) >3000 then
+Speaking(translate($idioma, "The clipboard text is more than three thousand characters."))
+Else
+speaking(translate($idioma, "Contents:") &" " &$cliptext)
+EndIf
 EndIf
 EndFunc
 func Readasdialogue()
 GuiSetState(@SW_Hide, $Gui_main)
 $Gui2= GuiCreate("Clipboard contents:")
 GuiSetState(@SW_SHOW)
+sleep(200)
 $cliptext = ClipGet()
 if $cliptext = "" then
 TTsDialog(translate($idioma, "No text in the clipboard"))
@@ -477,12 +506,14 @@ GuiDelete($Gui2)
 GuiSetState(@SW_SHOW, $Gui_main)
 EndFunc
 Func ReadAsDocument()
-$gui3 = GuiCreate("Reading clipboard history")
+$gui3 = GuiCreate(translate($idioma, "Reading clipboard history"))
 GuiSetState(@SW_SHOW)
-createTtsOutput("config\cliphistory.btx", "History")
+sleep(200)
+createTtsOutput("config\cliphistory.btx", translate($idioma, "History"))
 GuiDelete($gui3)
 EndFunc
 func SendData()
+if $enablehst = "yes" then global $inHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
 GuiSetState(@SW_Hide, $Gui_main)
 global $datatosend = ""
 global $filesent = ""
@@ -490,56 +521,70 @@ global $selectedfile=0
 global $Gui4= GuiCreate("Send data to clipboard")
 $texttosend = GUICtrlCreateLabel(translate($idioma, "Write the text to send"), 20, 50, 100, 20)
 global $sendinput = GUICtrlCreateInput("", 20, 100, 100, 20)
-global $BTN_file = GUICtrlCreateButton(translate($idioma, "Or if not, select a file"), 110, 50, 100, 20)
+global $BTN_file = GUICtrlCreateButton(translate($idioma, "Or if not, select a file"), 100, 50, 100, 20)
 GUICtrlSetOnEvent(-1, "Selectfile")
-global $BTN_Ok = GUICtrlCreateButton(translate($idioma, "OK"), 150, 50, 100, 20)
+global $BTN_Ok = GUICtrlCreateButton(translate($idioma, "OK"), 140, 50, 100, 20)
 GUICtrlSetOnEvent(-1, "OKdata")
-global $BTN_Cancel = GUICtrlCreateButton(translate($idioma, "Cancel"), 150, 50, 100, 20)
+global $BTN_Cancel = GUICtrlCreateButton(translate($idioma, "Cancel"), 175, 50, 100, 20)
 GUICtrlSetOnEvent(-1, "CloseSendData")
 GuiSetState(@SW_SHOW)
 EndFunc
 func CloseSendData()
+if $enablehst = "yes" then FileClose($inHistory)
 GuiDelete($Gui4)
 GuiSetState(@SW_SHOW, $Gui_main)
 EndFunc
 Func Selectfile()
-$filesent = FileOpenDialog("Select a file", @scriptDir & "\", "All Files (*.*))")
+$filesent = FileOpenDialog(translate($idioma, "Select a file"), "", translate($idioma, "All Files (*.*)"))
 If @error Then
-MsgBox(16, "error", "you did not select any file.")
-EndIF
+$selectedfile=0
+MsgBox(16, translate($idioma, "error"), translate($idioma, "you did not select any file."))
+else
 Beep(1000, 50)
-Speaking("File Selected: " &$filesent)
+Speaking(translate($idioma, "File Selected:") &" " &$filesent)
 $selectedfile=1
+EndIF
 EndFunc
 func OKdata()
 If $selectedfile = 1 then
 ClipPut($filesent)
+if $enablehst = "yes" then FileWriteLine($inHistory, $filesent)
 CloseSendData()
 else
 Global $datatosend = GUICtrlRead($sendinput)
 if $datatosend ="" then
-msgbox(16, "Error", "There is no text on the clipboard. You must enter something to send.")
+msgbox(16, translate($idioma, "Error"), translate($idioma, "There is no text on the clipboard. You must enter something to send."))
 else
 ClipPut($datatosend)
+if $enablehst = "yes" then FileWriteLine($inHistory, $datatosend)
 CloseSendData()
 EndIF
 EndIF
 EndFunc
 Func MonitorEnable2()
+if $idioma = "es" then
 if $enableVoice = 0 then
 If FileExists(@tempDir &"\BTX-voices") then
 $enableVoice = 1
 $cliptext = clipget()
+if $enableClip = 1 then
 Speaking(translate($idioma, "Use other voice enabled"))
+hablarEnLetras(translate($idioma, "Use other voice enabled"))
 GUICtrlSetState($idMonitor2, $GUI_CHECKED)
 else
-$dvoices1 = MsgBox(4, "Notice", "You don't have independent voices downloaded. Would you like to do it?")
+Speaking(translate($idioma, "To activate this option you need to have the monitoring turned on."))
+MSgBox(16, translate($idioma, "Error"), translate($idioma, "To activate this option you need to have the monitoring turned on."))
+GUICtrlSetState($idMonitor2, $GUI_UNCHECKED)
+$enableVoice = 0
+EndIF
+else
+$dvoices1 = MsgBox(4, translate($idioma, "Notice"), translate($idioma, "You don't have independent voices downloaded. Would you like to do it?"))
 if $dvoices1 = 6 then
 Downloadvoices()
 Else
 GUICtrlSetState($idMonitor2, $GUI_UNCHECKED)
-Speaking("To activate this function you need to have at least one voice")
-MsgBox(16, "Error", "To activate this function you need to have at least one voice")
+Speaking(translate($idioma, "To activate this function you need to have at least one voice"))
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "To activate this function you need to have at least one voice"))
 EndIf
 EndIf
 Else
@@ -547,17 +592,20 @@ $enableVoice = 0
 Speaking(translate($idioma, "Use other voice disabled"))
 GUICtrlSetState($idMonitor2, $GUI_UNCHECKED)
 EndIf
+else
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "This feature is not available in this language."))
+EndIF
 EndFunc
 func downloadvoices()
 $voicelist = InetRead("https://www.dropbox.com/s/tugjyr45vd3ez9t/voicelist.dat?dl=1")
 Local $vdata = BinaryToString($voicelist)
-global $guilist = guicreate("Download voices")
-$idlabellist = GUICtrlCreateLabel("List of available voices", 25, 50, 100, 20)
+global $guilist = guicreate(translate($idioma, "Download voices"))
+$idlabellist = GUICtrlCreateLabel(translate($idioma, "List of available voices"), 25, 50, 100, 20)
 Global $idlist = GUICtrlCreateList("", 120, 50, 120, 30)
 GUICtrlSetLimit(-1, 200)
-global $btndownload = GUICtrlCreateButton("Download", 160, 50, 120, 30)
+global $btndownload = GUICtrlCreateButton(translate($idioma, "Download"), 160, 50, 120, 30)
 GuiCtrlSetOnEvent(-1, "downloadvoice")
-global $btnclose = GUICtrlCreateButton("Close", 220, 50, 120, 30)
+global $btnclose = GUICtrlCreateButton(translate($idioma, "Close"), 220, 50, 120, 30)
 GuiCtrlSetOnEvent(-1, "closeddialogue")
 global $loTengo = StringSplit($vdata, ",")
 For $coloca = 1 To $loTengo[0] step 2
@@ -584,7 +632,190 @@ WEnd
 sleep(1000)
 _Zip_UnzipAll(@tempDir &"\es_default.zip", @TempDir &"\BTX-voices", 0)
 ProgressOff()
+MSgBox(48, translate($idioma, "Information"), translate($idioma, "The voice has been downloaded successfully!"))
 EndFunc
 func closeddialogue()
 GuiDelete($guilist)
+EndFunc
+func readdocumentmanual()
+global $gui5 = GuiCreate(translate($idioma, "Document reader"))
+GuiSetState(@SW_SHOW)
+$filename = FileOpenDialog(translate($idioma, "Select the document to open"), "", translate($idioma, "text files (*.txt)"))
+If @error Then
+MsgBox(16, translate($idioma, "error"), translate($idioma, "you did not select any file."))
+GuiDelete($gui5)
+EndIF
+sleep(100)
+beep(700, 100)
+beep(700, 100)
+createTtsOutput($filename, translate($idioma, "document opened"))
+Beep(1400, 200)
+speaking(translate($idioma, "The document has been closed"))
+GuiDelete($gui5)
+EndFunc
+func readinaudio()
+$filename2 = FileOpenDialog(translate($idioma, "Select the document to open"), "", translate($idioma, "text files (*.txt)"))
+If @error Then
+MsgBox(16, translate($idioma, "error"), translate($idioma, "you did not select any file."))
+EndIF
+global $abrir = FileOpen($filename2, $FO_READ)
+If $abrir = -1 Then MsgBox($MB_SYSTEMMODAL, translate($idioma, "error"), translate($idioma, "An error occurred when reading the file."))
+Global $docdata = FileRead($abrir)
+global $gui6 = GuiCreate(translate($idioma, "Document reader"))
+$control0 = GUICtrlCreateLabel(translate($idioma, "Source"), 2, 2, 50, 20, $WS_TABSTOP)
+$control1 = GUICtrlCreateEdit($docdata, 5, 5, 400, 200, BitOR($WS_VSCROLL, $WS_HSCROLL, $ES_READONLY))
+global $control2 = GUICtrlCreateLabel(translate($idioma, "&Rate"), 20, 40, 100, 20)
+global $control3 = GUICtrlCreateCombo("", 80, 40, 100, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GuiCtrlSetOnEvent(-1, "voiseset")
+GUICtrlSetData($control3, "-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9")
+global $control4 = GUICtrlCreateLabel("&Volume", 30, 110, 100, 20)
+global $control5 = GuiCtrlCreateSlider(80, 110, 100, 20, Bitor($GUI_SS_DEFAULT_SLIDER, $WS_TABSTOP))
+GUICtrlSetLimit(-1, 100, 0)
+GuiCtrlSetOnEvent(-1, "voiseset")
+GUICtrlSetData($control5, 50)
+global $control6 = GUICtrlCreateButton(translate($idioma, "&Speak"), 80, 175, 100, 20)
+GuiCtrlSetOnEvent(-1, "readHanddler")
+global $control7 = GUICtrlCreateButton(translate($idioma, "Save as &audio"), 80, 210, 100, 20)
+GuiCtrlSetOnEvent(-1, "readHanddler")
+global $control8 = GUICtrlCreateButton(translate($idioma, "S&top"), 80, 265, 100, 20)
+GuiCtrlSetOnEvent(-1, "ReadAudioDelete")
+global $control9 = GUICtrlCreateButton(translate($idioma, "&Close"), 130, 40, 120, 20)
+GuiCtrlSetOnEvent(-1, "ReadAudioDelete")
+Local $sComboRead = ""
+GUISetState(@SW_SHOW)
+GUISetOnEvent($GUI_EVENT_CLOSE, "ReadAudioDelete")
+EndFunc
+func ReadAudioDelete()
+select
+Case @GUI_CtrlId = $control8
+speak(" ", 3)
+speaking(translate($idioma, "reading has stopped"))
+Case @GUI_CtrlId = $control9
+speak(" ", 3)
+FileClose($abrir)
+GUIDelete($gui6)
+EndSelect
+EndFunc
+func voiseset()
+select
+Case @GUI_CtrlId = $control3
+global $sComboRead = GUICtrlRead($control3)
+$scrollsound.play
+spRate($sComboRead)
+speak(translate($idioma, "This is a speech speed test"), 3)
+Case @GUI_CtrlId = $control5
+global $sapivol = GUICtrlRead($control5)
+$scrollsound.play
+spVolume($sapivol)
+speak(translate($idioma, "Volume") &" " &$sapivol, 3)
+EndSelect
+EndFunc
+func readHanddler()
+select
+Case @GUI_CtrlId = $control7
+Global $txtout = $docdata
+$voice = _Utter_Voice_StartEngine()
+_Utter_Voice_Setvolume($voice, $sapivol)
+_Utter_Voice_SetRate($voice, $sComboRead)
+$saveaudio = FileSaveDialog(translate($idioma, "Save audio as..."), "", translate($idioma, "MP3 audio (*.MP3)|WAV audio (*.WAV)"), $FD_FILEMUSTEXIST)
+if $saveaudio = "" then
+MSGBox(16, translate($idioma, "Error"), translate($idioma, "it is important that you choose a destination file before proceeding."))
+else
+beep(900, 50)
+speaking(translate($idioma, "converting..."))
+if StringInStr($saveaudio, ".mp3") then
+If not FileExists(@scriptDir &"\engines\lame.exe") then
+$msglame = MsgBox(4, translate($idioma, "Warning"), translate($idioma, "To export audio to mp3 you need to have the lame encoder library. Would you like to download it now?"))
+If $msglame = 6 then
+DownloadLame()
+Else
+MsgBox(48, translate($idioma, "Agree"), translate($idioma, "At the moment you can save in wav format and download lame whenever you want."))
+EndIf ;$msglame
+else
+_Utter_Voice_Transcribe($voice, $saveaudio, $txtout, 0, @scriptDir &"\engines\lame.exe")
+EndIf ;FileExists("engines\lame.exe")
+EndIf
+beep(1800, 100)
+sleep(500)
+MsgBox(48, translate($idioma, "Information"), translate($idioma, "The audio file has been converted successfully!"))
+_Utter_Voice_Shutdown($voice)
+EndIf
+Case @GUI_CtrlId = $control6
+speak($docdata, 3)
+EndSelect
+EndFunc
+func readinvoice()
+$filetoread2 = FileOpenDialog(translate($idioma, "Select the document to open"), "", translate($idioma, "text files (*.txt)"))
+If @error Then
+MsgBox(16, translate($idioma, "error"), translate($idioma, "you did not select any file."))
+EndIF
+global $abrir = FileOpen($filetoread2, $FO_READ)
+If $abrir = -1 Then MsgBox(16, translate($idioma, "error"), translate($idioma, "An error occurred when reading the file."))
+Global $leeme = FileRead($abrir)
+select
+case stringLen($leeme) = ""
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "You have not selected a file or it is empty."))
+case stringLen($leeme) > 2000
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "In this version only documents of less than 2000 characters are allowed."))
+case else
+if $idioma = "es" then
+If FileExists(@tempDir &"\BTX-voices") then
+HablarEnLetras($leeme)
+else
+$dvoices2 = MsgBox(4, translate($idioma, "Notice"), translate($idioma, "You don't have independent voices downloaded. Would you like to do it?"))
+if $dvoices2 = 6 then
+Downloadvoices()
+Else
+speaking(translate($idioma, "To activate this function you need to have at least one voice"))
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "To activate this function you need to have at least one voice"))
+EndIf
+EndIf
+else
+MsgBox(16, translate($idioma, "Error"), translate($idioma, "This feature is not available in this language."))
+EndIF
+EndSelect
+EndFunc
+Func DownloadLame()
+$iPlaces = 2
+$lameurl = "https://www.dropbox.com/s/14utk87bmp7dqga/lame.exe?dl=1"
+$dllame = InetGet($lameurl, @ScriptDir &"\engines\lame.exe", 1, 1)
+$exeSize = InetGetSize($lameurl)
+While Not InetGetInfo($dllame, 2)
+Sleep(100)
+$exeSize2 = InetGetInfo($dllame, 0)
+$Percent = Int($exeSize2 / $exeSize * 100)
+$oldpercent = $Percent
+$iSize = $exeSize - $exeSize2
+if $percent <> $oldPercent then
+CreateAudioProgress($Percent)
+speaking($Percent &"% " &_GetDisplaySize($iSize, $iPlaces = 2) & " " &translate($idioma, "remaining") &$Percent & " " &translate($idioma, "percent completed"))
+EndIf
+WEnd
+sleep(1000)
+MSgBox(48, translate($idioma, "Information"), translate($idioma, "The lame encoder has been downloaded successfully"))
+EndFunc
+Func report()
+ShellExecute("https://docs.google.com/forms/d/e/1FAIpQLSdDW6LqMKGHjUdKmHkAZdAlgSDilHaWQG9VZjwLz0CJSXKqHA/viewform?usp=sf_link")
+If @error then MsgBox(16, "Error", "Cannot run browser. It is likely that you have to add an association.")
+EndFunc
+func ReadChanges2()
+global $openned
+$doc = "documentation\" &$idioma &"\changes.txt"
+global $DocOpen = FileOpen($doc, $FO_READ)
+speaking(translate($idioma, "Opening..."))
+If $DocOpen = "-1" Then MsgBox(16, translate($idioma, "error"), translate($idioma, "An error occurred when reading the file."))
+$openned = FileRead($DocOpen)
+global $mwindow = GUICreate(translate($idioma, "Changes"))
+$idMyedit = GUICtrlCreateEdit($openned, 5, 5, 390, 360, BitOR($WS_VSCROLL, $WS_HSCROLL, $ES_READONLY))
+$idExitDoc = GUICtrlCreateButton(translate($idioma, "Close"), 100, 370, 150, 30)
+GuiCtrlSetOnEvent(-1, "delete2")
+GUISetOnEvent($GUI_EVENT_CLOSE, "delete2")
+GUISetState(@SW_SHOW)
+EndFunc
+func delete2()
+FileClose($DocOpen)
+GUIDelete($mwindow)
+EndFunc
+func newIssue()
+ShellExecute("https://github.com/rmcpantoja/blind-text/issues/new")
 EndFunc

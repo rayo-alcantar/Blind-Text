@@ -26,7 +26,7 @@ EndIf
 Local $iFreqStart =0.01
 Local $iFreqEnd = 2.00
 $count = 0
-$tin = $device.opensound ("sounds/progress.ogg", 0)
+$tin = $device.opensound (@ScriptDir &"\sounds/progress.ogg", 0)
 $count = $numero *0.04
 if $count = 0 then
 $tin.pitchshift = 0.125
