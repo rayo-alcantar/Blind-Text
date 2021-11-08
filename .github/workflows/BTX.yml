@@ -34,11 +34,13 @@ jobs:
         with:
           name: btx
           path: |
+            sounds.dat
+            nvdaControllerClient32.dll
             BlindText.exe
           if-no-files-found: error
       - name: Zip package
         if: startsWith(github.ref, 'refs/tags/')
-        run: 7z a btx.zip BlindText.exe Documentation lng nvdaControllerClient32.dll sounds.dat
+        run: 7z a btx.zip *.exe documentation\*.txt lng\*.lang *.dll *.dat
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
