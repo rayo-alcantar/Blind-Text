@@ -34,17 +34,17 @@ jobs:
         with:
           name: btx
           path: |
-            btx.exe
+            BlindText.exe
           if-no-files-found: error
       - name: Zip package
         if: startsWith(github.ref, 'refs/tags/')
-        run: 7z a btx.zip btx*.exe
+        run: 7z a btx.zip BlindText.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            btx.exe
+            BlindText.exe
             btx.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
