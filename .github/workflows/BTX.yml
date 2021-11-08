@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-runs-on: self-hosted
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: Cache tools
@@ -50,5 +50,4 @@ runs-on: self-hosted
             btx.zip
             checksums.sha256
         env:
-
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
