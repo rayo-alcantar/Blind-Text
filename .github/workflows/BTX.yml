@@ -38,13 +38,12 @@ jobs:
           if-no-files-found: error
       - name: Zip package
         if: startsWith(github.ref, 'refs/tags/')
-        run: 7z a btx.zip BlindText.exe
+        run: 7z a btx.zip BlindText.exe Documentation lng nvdaControllerClient32.dll sounds.dat
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            BlindText.exe
             btx.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
