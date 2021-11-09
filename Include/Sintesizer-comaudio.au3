@@ -1,9 +1,10 @@
-#include <Sound.au3>
-#include <file.au3>
+#include "audio.au3"
 dim $characters[2048]
 $textstring = "equis"
-$voice = ""
-func HablarEnLetras($voice, $str)
+func HablarEnLetras($voice, $str, $Voicepitch = "1", $Voicevolume = "1")
+global $svoice = $voice
+global $vpitch = $voicepitch
+global $vvolume = $voicevolume
 ;Aplicando correcciones de diccionario:
 $str = StringReplace($str, ":", ".")
 $str = StringReplace($str, "ca", "qa")
@@ -114,8 +115,12 @@ msgbox(0, "Finished", "finished")
 EndFunc
 
 func Voiceplay($SToPlay)
-$soundToPlay = _soundOpen(@tempDir &"\BTX-voices\es_Default\" &$sToPlay &random(1, 3, 1) &".wav")
-_soundPlay ($soundToPlay, 0)
-while _soundLength ($soundToPlay, 2) - _soundPos ($soundToPlay, 2) > 30
+;msgbox(0, "Info", $Svoice &"/" &$SToPlay &random(1, 3, 1) &".wav")
+$soundToPlay = $device.opensound($svoice &"/" &$SToPlay &random(1, 3, 1) &".wav", 0)
+$soundToPlay.pitchshift = $vpitch
+$soundToPlay.volume = $vvolume
+$soundToPlay.play
+while $soundToPlay.playing
+sleep(10)
 wend
 EndFunc

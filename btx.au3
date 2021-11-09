@@ -3,17 +3,17 @@
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Change2CUI=N
 #AutoIt3Wrapper_Res_Description=Blind Text
-#AutoIt3Wrapper_Res_Fileversion=0.1.0.0
+#AutoIt3Wrapper_Res_Fileversion=0.2.0.0
 #AutoIt3Wrapper_Res_Fileversion_AutoIncrement=p
 #AutoIt3Wrapper_Res_ProductName=Blind Text
-#AutoIt3Wrapper_Res_ProductVersion=0.1.0.0
+#AutoIt3Wrapper_Res_ProductVersion=0.2.0.0
 #AutoIt3Wrapper_Res_CompanyName=MT Programs
 #AutoIt3Wrapper_Res_LegalCopyright=© 2018-2021 MT Programs, All rights reserved
 ;#AutoIt3Wrapper_Res_Language=12298
 ;#AutoIt3Wrapper_AU3Check_Parameters=-d -w 1 -w 2 -w 3 -w 4 -w 5 -w 6 -w 7 -v1 -v2 -v3
-;#AutoIt3Wrapper_Run_Au3Stripper=y
+#AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/so
-;#AutoIt3Wrapper_Run_Tidy=n
+;#AutoIt3Wrapper_Run_Tidy=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ;Btx
 ;By Mateo Cedillo
@@ -25,14 +25,14 @@
 #pragma compile(inputboxres, false)
 #pragma compile(FileDescription, Blind Text)
 #pragma compile(ProductName, Blind Text)
-#pragma compile(ProductVersion, 0.1.0.0)
-#pragma compile(Fileversion, 0.1.0.4)
+#pragma compile(ProductVersion, 0.2.0.0)
+#pragma compile(Fileversion, 0.2.0.6)
 #pragma compile(InternalName, "mateocedillo.BTX")
 #pragma compile(LegalCopyright, © 2018-2021 MT Programs, All rights reserved)
 #pragma compile(CompanyName, 'MT Programs')
 #pragma compile(OriginalFilename, BlindText.exe)
 global $programname="Blind text"
-global $program_ver = "0.1"
+global $program_ver = "0.2"
 global $cpt_ver = "2021.11.5.0"
 $idioma = iniRead ("config\config.st", "General settings", "language", "")
 ;Include
@@ -54,7 +54,7 @@ $idioma = iniRead ("config\config.st", "General settings", "language", "")
 #include <include\sapi.au3>
 #include "include\share.au3"
 #include <SliderConstants.au3>
-#include "include\sintesizer.au3"
+#include "include\Sintesizer-comaudio.au3"
 #include "include\translator.au3"
 #include "updater.au3"
 #include "include\Utter.au3"
@@ -75,12 +75,9 @@ $enablehst = "yes"
 else
 EndIF
 global $soundclose = $device.opensound ("sounds/close.ogg", true)
-global $SCHECKBOX = $device.opensound ("sounds/CHECKBOX.ogg", true)
-global $SCHECKBOX2 = $device.opensound ("sounds/CHECKBOX_unchecked.ogg", true)
 global $errorsound = $device.opensound ("sounds/error.ogg", true)
 global $open = $device.opensound ("sounds/open.ogg", true)
 global $radiosound = $device.opensound ("sounds/radio.ogg", true)
-global $scrollsound = $device.opensound ("sounds/scrollTop.ogg", 0)
 global $enableClip = 0
 global $enableVoice = 0
 global $oldtext = ""
@@ -350,13 +347,13 @@ if $cliptext <> $oldtext then
 if $enablehst = "yes" then $FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
 if stringLen($cliptext) > 3000 then
 if $enableVoice = 1 then
-HablarEnLetras(Translate($idioma, "The clipboard text is more than three thousand characters."))
+HablarEnLetras("Es_default", "es_default", Translate($idioma, "The clipboard text is more than three thousand characters."))
 Else
 speaking(Translate($idioma, "The clipboard text is more than three thousand characters."))
 EndIf
 else
 If $enableVoice = 1 then
-HablarEnLetras($cliptext)
+HablarEnLetras("Es_default", $cliptext)
 else
 speaking($cliptext)
 EndIf
@@ -569,7 +566,7 @@ $enableVoice = 1
 $cliptext = clipget()
 if $enableClip = 1 then
 Speaking(translate($idioma, "Use other voice enabled"))
-hablarEnLetras(translate($idioma, "Use other voice enabled"))
+HablarEnLetras("Es_default", translate($idioma, "Use other voice enabled"))
 GUICtrlSetState($idMonitor2, $GUI_CHECKED)
 else
 Speaking(translate($idioma, "To activate this option you need to have the monitoring turned on."))
@@ -760,7 +757,7 @@ MsgBox(16, translate($idioma, "Error"), translate($idioma, "In this version only
 case else
 if $idioma = "es" then
 If FileExists(@tempDir &"\BTX-voices") then
-HablarEnLetras($leeme)
+HablarEnLetras("Es_default", $leeme)
 else
 $dvoices2 = MsgBox(4, translate($idioma, "Notice"), translate($idioma, "You don't have independent voices downloaded. Would you like to do it?"))
 if $dvoices2 = 6 then

@@ -1,4 +1,7 @@
 ;Options:
+global $SCHECKBOX = $device.opensound ("sounds/CHECKBOX.ogg", true)
+global $SCHECKBOX2 = $device.opensound ("sounds/CHECKBOX_unchecked.ogg", true)
+global $scrollsound = $device.opensound ("sounds/scrollTop.ogg", 0)
 Func options()
 global $ifsavesettings = IniRead("config\config.st", "General settings", "Save settings", "")
 global $ifsavelogs = IniRead("config\config.st", "General settings", "Save logs", "")
