@@ -1,5 +1,5 @@
-;#include "kbc.au3"
 #include-once
+#include "kbc.au3"
 #include "log.au3"
 #include "jfw.au3"
 #include "NVDAControllerClient.au3"
@@ -12,10 +12,13 @@ Func speaking($text)
 $speak = IniRead(@ScriptDir & "\config\config.st", "accessibility", "Speak Whit", "")
 Select
 Case $speak = "NVDA"
+if @AutoItX64 = 1 then
+_nvdaControllerClient_Load(@ScriptDir & "\nvdaControllerClient64.dll")
+else
 _nvdaControllerClient_Load()
+EndIF
 If @error Then
 MsgBox(16, "error", "cant load the NVDA DLL file")
-Exit
 Else
 ;_NVDAControllerClient_CancelSpeech()
 _NVDAControllerClient_SpeakText($text)
