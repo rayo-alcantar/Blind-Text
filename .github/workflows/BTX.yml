@@ -34,7 +34,8 @@ jobs:
         with:
           name: btx
           path: |
-            documentation\*.txt
+            Documentation\en\*.txt
+            Documentation\es\*.txt
             lng\*.lang
             sounds.dat
             nvdaControllerClient32.dll
@@ -42,7 +43,7 @@ jobs:
           if-no-files-found: error
       - name: Zip package
         if: startsWith(github.ref, 'refs/tags/')
-        run: 7z a btx.zip *.exe documentation\ lng\ *.dll *.dat
+        run: 7z a btx.zip *.exe Documentation\en\ Documentation\es\ lng\ *.dll *.dat
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
