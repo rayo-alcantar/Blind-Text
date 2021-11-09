@@ -17,8 +17,8 @@
 ;#AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/so
 ;#AutoIt3Wrapper_Versioning=v
-#AutoIt3Wrapper_Run_After="%scriptdir%\buildsounds.bat"
-#AutoIt3Wrapper_Run_Before="%scriptdir%\encrypter-auto.exe"
+#AutoIt3Wrapper_Run_Before="%scriptdir%\buildsounds.bat"
+#AutoIt3Wrapper_Run_After="%scriptdir%\encrypter-auto.exe"
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ;Btx
 ;By Mateo Cedillo
@@ -31,7 +31,7 @@
 #pragma compile(FileDescription, Blind Text)
 #pragma compile(ProductName, Blind Text)
 #pragma compile(ProductVersion, 0.2.0.0)
-#pragma compile(Fileversion, 0.2.0.19)
+#pragma compile(Fileversion, 0.2.0.20)
 #pragma compile(InternalName, "mateocedillo.BTX")
 #pragma compile(LegalCopyright, © 2018-2021 MT Programs, All rights reserved)
 #pragma compile(CompanyName, 'MT Programs')
