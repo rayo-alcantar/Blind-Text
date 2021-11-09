@@ -31,7 +31,7 @@
 #pragma compile(FileDescription, Blind Text)
 #pragma compile(ProductName, Blind Text)
 #pragma compile(ProductVersion, 0.2.0.0)
-#pragma compile(Fileversion, 0.2.0.22)
+#pragma compile(Fileversion, 0.2.0.24)
 #pragma compile(InternalName, "mateocedillo.BTX")
 #pragma compile(LegalCopyright, © 2018-2021 MT Programs, All rights reserved)
 #pragma compile(CompanyName, 'MT Programs')

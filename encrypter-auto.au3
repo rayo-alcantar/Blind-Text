@@ -1,3 +1,12 @@
+#RequireAdmin
+ConsoleWrite("verifying administrator privileges" &@crlf)
+If not IsAdmin() Then
+ConsoleWriteError("It was impossible to run the script with administrator rights." &@crlf)
+sleep(200)
+exit
+else
+ConsoleWrite("It's admin: Yes" &@crlf)
+EndIf
 #include "include\audio.au3"
 #include "include\zip.au3"
 encrypt()
