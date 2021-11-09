@@ -39,7 +39,6 @@ jobs:
             lng\*.lang
             lng\*.txt
             sounds.dat
-            es_default.dat
             nvdaControllerClient32.dll
             BlindText.exe
           if-no-files-found: error
