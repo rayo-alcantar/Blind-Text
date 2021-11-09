@@ -12,7 +12,7 @@ MsgBox(16, "Error", "No fue posible instalar las librerías de audio necesarias. 
 Exit
 EndIf
 endif
-;$comaudio.archiveExtension = "sounds.dat"
+;$comaudio.archiveExtension = "es.dat"
 $comaudio.UseEncryption = true
 $comaudio.EncryptionKey = "superpollo"
 $device = $comaudio.openDevice("","")
