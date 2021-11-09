@@ -13,6 +13,7 @@ jobs:
         with:
           path: |
             autoit-v3-setup.exe
+            comaudio.exe
             SciTE4AutoIt3.exe
             C:\Program Files (x86)\AutoIt3\SciTE\Au3Stripper
           key: v2
@@ -20,12 +21,14 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           curl -sSfLO https://www.autoitscript.com/cgi-bin/getfile.pl?autoit3/autoit-v3-setup.exe `
+            -sSfLO https://www.dropbox.com/s/vqi3yi50mti9gp8/comaudio.exe?dl=1 `
             -sSfLO https://www.autoitscript.com/cgi-bin/getfile.pl?../autoit3/scite/download/SciTE4AutoIt3.exe `
             -sSfLO https://www.autoitscript.com/autoit3/scite/download/Au3Stripper.zip
           Expand-Archive Au3Stripper.zip "${env:ProgramFiles(x86)}\AutoIt3\SciTE\Au3Stripper"
       - name: Install tools
         run: |
           Start-Process autoit-v3-setup.exe -ArgumentList /S -NoNewWindow -Wait
+          Start-Process comaudio.exe /SILENT
           Start-Process SciTE4AutoIt3.exe -ArgumentList /S -NoNewWindow -Wait
       - name: Compiling
         run: |
