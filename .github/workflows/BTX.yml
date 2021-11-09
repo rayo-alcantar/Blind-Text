@@ -37,6 +37,7 @@ jobs:
             Documentation\en\*.txt
             Documentation\es\*.txt
             lng\*.lang
+            lng\*.txt
             sounds.dat
             nvdaControllerClient32.dll
             BlindText.exe
