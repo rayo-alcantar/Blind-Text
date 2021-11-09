@@ -4,16 +4,21 @@
 #AutoIt3Wrapper_Change2CUI=N
 #AutoIt3Wrapper_Res_Description=Blind Text
 #AutoIt3Wrapper_Res_Fileversion=0.2.0.0
+;#AutoIt3Wrapper_Res_Fileversion_Use_Template=%YYYY.%MO.%DD.0
 #AutoIt3Wrapper_Res_Fileversion_AutoIncrement=p
+;#AutoIt3Wrapper_Res_Fileversion_First_Increment=y
 #AutoIt3Wrapper_Res_ProductName=Blind Text
 #AutoIt3Wrapper_Res_ProductVersion=0.2.0.0
 #AutoIt3Wrapper_Res_CompanyName=MT Programs
 #AutoIt3Wrapper_Res_LegalCopyright=© 2018-2021 MT Programs, All rights reserved
-;#AutoIt3Wrapper_Res_Language=12298
+#AutoIt3Wrapper_Res_Language=12298
 ;#AutoIt3Wrapper_AU3Check_Parameters=-d -w 1 -w 2 -w 3 -w 4 -w 5 -w 6 -w 7 -v1 -v2 -v3
-#AutoIt3Wrapper_Run_Au3Stripper=y
+#AutoIt3Wrapper_Run_Tidy=n
+;#AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/so
-;#AutoIt3Wrapper_Run_Tidy=y
+;#AutoIt3Wrapper_Versioning=v
+#AutoIt3Wrapper_Run_After="%scriptdir%\buildsounds.bat"
+#AutoIt3Wrapper_Run_Before="%scriptdir%\encrypter-auto.exe"
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ;Btx
 ;By Mateo Cedillo
@@ -26,7 +31,7 @@
 #pragma compile(FileDescription, Blind Text)
 #pragma compile(ProductName, Blind Text)
 #pragma compile(ProductVersion, 0.2.0.0)
-#pragma compile(Fileversion, 0.2.0.6)
+#pragma compile(Fileversion, 0.2.0.19)
 #pragma compile(InternalName, "mateocedillo.BTX")
 #pragma compile(LegalCopyright, © 2018-2021 MT Programs, All rights reserved)
 #pragma compile(CompanyName, 'MT Programs')
@@ -58,6 +63,7 @@ $idioma = iniRead ("config\config.st", "General settings", "language", "")
 #include "include\translator.au3"
 #include "updater.au3"
 #include "include\Utter.au3"
+#include "include\voiceDownloader.au3"
 #include <WindowsConstants.au3>
 #include "include\zip.au3"
 Opt("GUIOnEventMode",1)
@@ -138,6 +144,14 @@ EndFunc
 func comprovar()
 if not fileExists ("config") then DirCreate("config")
 GUIDelete($l1)
+;if @OSArch = "x64" and @AutoItX64 = 0 then
+;msgBox(48, Translate($idioma, "Warning"), Translate($idioma, "You run a 64-bit pc with the 32-bit version of the program. "&@crlf &"For better performance in the program, we recommend that you download the 64-bit version at http://mateocedillo.260mb.net/programs.html"))
+;exitpersonaliced()
+;endif
+;if @OSArch = "x86" and @AutoItX64 = 1 then
+;msgBox(48, Translate($idioma, "Warning"), Translate($idioma, "You run a 32-bit pc with the 64-bit version of the program." &@crlf &"For better performance in the program, we recommend that you download the 32-bit version at http://mateocedillo.260mb.net/programs.html"))
+;exitpersonaliced()
+;endif
 checkselector()
 EndFunc
 func checkselector()
@@ -592,47 +606,6 @@ EndIf
 else
 MsgBox(16, translate($idioma, "Error"), translate($idioma, "This feature is not available in this language."))
 EndIF
-EndFunc
-func downloadvoices()
-$voicelist = InetRead("https://www.dropbox.com/s/tugjyr45vd3ez9t/voicelist.dat?dl=1")
-Local $vdata = BinaryToString($voicelist)
-global $guilist = guicreate(translate($idioma, "Download voices"))
-$idlabellist = GUICtrlCreateLabel(translate($idioma, "List of available voices"), 25, 50, 100, 20)
-Global $idlist = GUICtrlCreateList("", 120, 50, 120, 30)
-GUICtrlSetLimit(-1, 200)
-global $btndownload = GUICtrlCreateButton(translate($idioma, "Download"), 160, 50, 120, 30)
-GuiCtrlSetOnEvent(-1, "downloadvoice")
-global $btnclose = GUICtrlCreateButton(translate($idioma, "Close"), 220, 50, 120, 30)
-GuiCtrlSetOnEvent(-1, "closeddialogue")
-global $loTengo = StringSplit($vdata, ",")
-For $coloca = 1 To $loTengo[0] step 2
-GUICtrlSetData($idlist, $loTengo[$coloca])
-Next
-speaking("Loaded")
-GUISetState(@SW_SHOW)
-EndFunc
-func downloadvoice()
-$searchstr = GUICtrlRead($idList)
-$searchleng = StringLen($searchstr)
-guiDelete($guilist)
-ProgressOn(translate($idioma, "Downloading..."), "Please wait...", "0%", 100, 100, 16)
-$iPlaces = 2
-$download1 = InetGet($loTengo[2], @tempDir &"\es_default.zip", 1, 1)
-$Size = InetGetSize($loTengo[2])
-While Not InetGetInfo($download1, 2)
-Sleep(50)
-$Size2 = InetGetInfo($download1, 0)
-$Percent = Int($Size2 / $Size * 100)
-$iSize = $Size - $Size2
-ProgressSet($Percent, _GetDisplaySize($iSize, $iPlaces = 2) & " " &translate($idioma, "remaining") &$Percent & " " &translate($idioma, "percent completed"))
-WEnd
-sleep(1000)
-_Zip_UnzipAll(@tempDir &"\es_default.zip", @TempDir &"\BTX-voices", 0)
-ProgressOff()
-MSgBox(48, translate($idioma, "Information"), translate($idioma, "The voice has been downloaded successfully!"))
-EndFunc
-func closeddialogue()
-GuiDelete($guilist)
 EndFunc
 func readdocumentmanual()
 global $gui5 = GuiCreate(translate($idioma, "Document reader"))
