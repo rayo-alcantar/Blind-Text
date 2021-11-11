@@ -8,7 +8,9 @@ RunWait("comaudio.exe /SILENT")
 InetClose($dwncomaudio)
 $comaudio = ObjCreate("ComAudio.Service")
 If @Error then
-MsgBox(16, "Error", "No fue posible instalar las librerías de audio necesarias. Por favor, ejecuta este programa como administrador.")
+ConsoleWriteError("It was not possible to install the necessary audio libraries. Please run this program as an administrator.")
+sleep(100)
+MsgBox(16, "Error", "It was not possible to install the necessary audio libraries. Please run this program as an administrator.", 10)
 Exit
 EndIf
 endif
