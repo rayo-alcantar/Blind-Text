@@ -3,10 +3,8 @@
 ; it initializes it.
 $comaudio = ObjCreate("ComAudio.Service")
 If @Error then
-ConsoleWrite("Comaudio is not installed. Downloading...")
-$dwncomaudio = InetGet("https://www.dropbox.com/s/vqi3yi50mti9gp8/comaudio.exe?dl=1", "comaudio.exe")
+ConsoleWrite("Comaudio is not installed. Installing...")
 RunWait("comaudio.exe /SILENT")
-InetClose($dwncomaudio)
 $comaudio = ObjCreate("ComAudio.Service")
 If @Error then
 ConsoleWriteError("It was not possible to install the necessary audio libraries. Please run this program as an administrator.")
