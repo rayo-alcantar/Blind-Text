@@ -361,7 +361,7 @@ if $cliptext <> $oldtext then
 if $enablehst = "yes" then $FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
 if stringLen($cliptext) > 3000 then
 if $enableVoice = 1 then
-HablarEnLetras("es_female", "es_female", Translate($idioma, "The clipboard text is more than three thousand characters."))
+HablarEnLetras("es_female", Translate($idioma, "The clipboard text is more than three thousand characters."))
 Else
 speaking(Translate($idioma, "The clipboard text is more than three thousand characters."))
 EndIf
