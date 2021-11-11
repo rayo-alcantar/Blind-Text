@@ -1,4 +1,6 @@
 #RequireAdmin
+#include "include\audio.au3"
+#include "include\zip.au3"
 ConsoleWrite("verifying administrator privileges" &@crlf)
 If not IsAdmin() Then
 ConsoleWriteError("It was impossible to run the script with administrator rights." &@crlf)
@@ -7,8 +9,6 @@ exit
 else
 ConsoleWrite("It's admin: Yes" &@crlf)
 EndIf
-#include "include\audio.au3"
-#include "include\zip.au3"
 encrypt()
 func encrypt()
 ConsoleWrite(@ScriptDir &" " &@year &"-" &@mon &"-" &@mday &" " &@HOUR & ":" &@MIN & ":" &@sec &": Starting the sounds encryption process..." &@CRLF)
