@@ -4,8 +4,8 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-##    runs-on: Windows-latest
-    runs-on: self-hosted
+    runs-on: Windows-latest
+##    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: Cache tools
