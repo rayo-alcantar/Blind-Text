@@ -17,8 +17,8 @@
 ;#AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/so
 ;#AutoIt3Wrapper_Versioning=v
-#AutoIt3Wrapper_Run_Before="buildsounds.bat"
-#AutoIt3Wrapper_Run_After=encrypter-auto.exe
+;#AutoIt3Wrapper_Run_Before="buildsounds.bat"
+;#AutoIt3Wrapper_Run_After=encrypter-auto.exe
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ;Btx
 ;By Mateo Cedillo
@@ -59,7 +59,7 @@ $idioma = iniRead ("config\config.st", "General settings", "language", "")
 #include <include\sapi.au3>
 #include "include\share.au3"
 #include <SliderConstants.au3>
-#include "include\Sintesizer-comaudio.au3"
+#include "include\Sintesizer.au3"
 #include "include\translator.au3"
 #include "updater.au3"
 #include "include\Utter.au3"
@@ -361,13 +361,13 @@ if $cliptext <> $oldtext then
 if $enablehst = "yes" then $FileHistory = FileOpen(@scriptdir & "\config\Cliphistory.btx", 1)
 if stringLen($cliptext) > 3000 then
 if $enableVoice = 1 then
-HablarEnLetras("Es_default", "es_default", Translate($idioma, "The clipboard text is more than three thousand characters."))
+HablarEnLetras("es_female", "es_female", Translate($idioma, "The clipboard text is more than three thousand characters."))
 Else
 speaking(Translate($idioma, "The clipboard text is more than three thousand characters."))
 EndIf
 else
 If $enableVoice = 1 then
-HablarEnLetras("Es_default", $cliptext)
+HablarEnLetras("es_female", $cliptext)
 else
 speaking($cliptext)
 EndIf
@@ -417,7 +417,7 @@ While _IsPressed($control) And _IsPressed($y)
 Sleep(100)
 WEnd
 EndIf
-sleep(100)
+sleep(200) ;decrease CPU usage.
 else
 ContinueLoop
 EndIf
@@ -580,7 +580,7 @@ $enableVoice = 1
 $cliptext = clipget()
 if $enableClip = 1 then
 Speaking(translate($idioma, "Use other voice enabled"))
-HablarEnLetras("Es_default", translate($idioma, "Use other voice enabled"))
+HablarEnLetras("es_female", translate($idioma, "Use other voice enabled"))
 GUICtrlSetState($idMonitor2, $GUI_CHECKED)
 else
 Speaking(translate($idioma, "To activate this option you need to have the monitoring turned on."))
@@ -730,7 +730,7 @@ MsgBox(16, translate($idioma, "Error"), translate($idioma, "In this version only
 case else
 if $idioma = "es" then
 If FileExists(@tempDir &"\BTX-voices") then
-HablarEnLetras("Es_default", $leeme)
+HablarEnLetras("es_female", $leeme)
 else
 $dvoices2 = MsgBox(4, translate($idioma, "Notice"), translate($idioma, "You don't have independent voices downloaded. Would you like to do it?"))
 if $dvoices2 = 6 then
